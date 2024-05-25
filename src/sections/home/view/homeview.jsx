@@ -1,7 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import { Stack, Button, Container, Box } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
+import { useDispatch } from 'react-redux';
+import { useCookies } from 'react-cookie';
+import { getAllInstructions } from 'src/api/instruction';
 import CustomizedSteppers from '../stepper';
 import AttendanceTable from '../attendanceTable';
 import WeatherForecast from '../weatherForecast';
@@ -9,6 +12,10 @@ import VideoInstruction from '../videoinstruction';
 import Test from '../test';
 
 function HomeView() {
+  const dispatch = useDispatch();
+
+  const [cookies] = useCookies();
+
   const [activeStep, setActiveStep] = useState(0);
   const [isNextDisabled, setIsNextDisabled] = useState(false);
 
@@ -17,6 +24,12 @@ function HomeView() {
 
   const disableNext = () => setIsNextDisabled(true);
   const enableNext = () => setIsNextDisabled(false);
+
+  useEffect(() => {
+    dispatch(getAllInstructions({ token: cookies?.access }));
+
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <Container maxWidth="xl">

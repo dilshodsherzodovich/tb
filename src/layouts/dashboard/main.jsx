@@ -6,6 +6,8 @@ import { useResponsive } from 'src/hooks/use-responsive';
 
 import { NAV, HEADER } from './config-layout';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 // ----------------------------------------------------------------------
 
 const SPACING = 8;
