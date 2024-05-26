@@ -11,4 +11,14 @@ const getAllInstructions = createAsyncThunk('instruction/getAll', async ({ token
   });
 });
 
-export { getAllInstructions };
+const getInstructionsDetails = createAsyncThunk('instruction/detail', async ({ token, id }) => {
+  const { request } = useHttp();
+  return request({
+    url: `/instruction/detail/${id}/`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+});
+
+export { getAllInstructions, getInstructionsDetails };

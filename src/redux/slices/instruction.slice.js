@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllInstructions } from 'src/api/instruction';
+import { getAllInstructions, getInstructionsDetails } from 'src/api/instruction';
 
 const initialState = {
-  instrctions: {},
+  instrctions: [],
   instructionsLoading: false,
+
+  detail: {},
+  detailLoading: false,
 };
 
 const instructionSlice = createSlice({
@@ -20,6 +23,17 @@ const instructionSlice = createSlice({
       })
       .addCase(getAllInstructions.rejected, (state) => {
         state.instructionsLoading = false;
+      })
+
+      .addCase(getInstructionsDetails.pending, (state) => {
+        state.detailLoading = true;
+      })
+      .addCase(getInstructionsDetails.fulfilled, (state, action) => {
+        state.detail = action.payload;
+        state.detailLoading = false;
+      })
+      .addCase(getInstructionsDetails.rejected, (state) => {
+        state.detailLoading = false;
       });
   },
 });

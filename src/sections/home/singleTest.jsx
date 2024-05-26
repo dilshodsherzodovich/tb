@@ -9,7 +9,7 @@ function SingleTest({ test, index, addAnswers }) {
   const handleSubmit = () => {
     setIsSubmitted(true);
     const answer = {
-      question: test?.question,
+      question: test?.question_text,
       selected: activeChoice?.id,
       is_correct: activeChoice?.is_correct,
     };
@@ -17,7 +17,7 @@ function SingleTest({ test, index, addAnswers }) {
   };
 
   const renderChoices = () =>
-    test?.choices?.map((item, idx) => {
+    test?.choices?.map((item) => {
       let background = '';
       let border = 'rgba(145, 158, 171, 0.2)';
       let color = grey[600];
@@ -55,7 +55,7 @@ function SingleTest({ test, index, addAnswers }) {
             }}
           >
             <Typography sx={{ color }} fontSize={14}>
-              {item?.title}
+              {item?.choice_text}
             </Typography>
           </Box>
         </Grid>
@@ -67,7 +67,7 @@ function SingleTest({ test, index, addAnswers }) {
       <Card sx={{ p: 3 }}>
         <Typography fontSize={18}>
           {index + 1} {'. '}
-          {test?.question}
+          {test?.question_text}
         </Typography>
         <Grid container spacing={1} mt="2px">
           {renderChoices()}

@@ -53,7 +53,7 @@ const VideoJS = (props) => {
   );
 };
 
-function VideoInstruction({ disableNext, enableNext }) {
+function VideoInstruction({ disableNext, enableNext, video }) {
   const playerRef = React.useRef(null);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function VideoInstruction({ disableNext, enableNext }) {
     Loop: false,
     sources: [
       {
-        src: 'https://videos.pexels.com/video-files/2491284/2491284-uhd_4096_2160_24fps.mp4',
+        src: video,
         type: 'video/mp4',
       },
     ],

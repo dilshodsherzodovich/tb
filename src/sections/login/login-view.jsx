@@ -36,7 +36,7 @@ export default function LoginView() {
   const { loading, user } = useSelector((state) => state.login);
 
   useEffect(() => {
-    if (user?.data?.tokens?.length) {
+    if (user?.data?.tokens) {
       setCookie('access', user?.data?.tokens?.access, {
         maxAge: 30 * 24 * 3600,
         secure: 'tb',
