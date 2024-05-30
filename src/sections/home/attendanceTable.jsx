@@ -83,7 +83,7 @@ function AttendanceTable({ finished = false, users, loading }) {
                 </TableCell>
               ) : null}
               <TableCell>
-                {!item?.confirmations ? (
+                {!item?.attendance ? (
                   <LoadingButton
                     loading={activeInstructionsConfirmingUsers?.includes(item?.user?.id)}
                     onClick={() => handleConfirmUser(item?.user?.id)}

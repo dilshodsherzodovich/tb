@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { isUndefined } from 'lodash';
 import { useHttp } from 'src/hooks/use-http';
 
-const getAllInstructions = createAsyncThunk('instruction/get', async ({ token }) => {
+const getAllInstructions = createAsyncThunk('instruction/get', async ({ token, status }) => {
   const { request } = useHttp();
   return request({
-    url: '/instruction/',
+    url: `/instruction/${!isUndefined(status) ? `?status=${status}` : ''}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
