@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react';
 import SvgColor from 'src/components/svg-color';
 
 // ----------------------------------------------------------------------
@@ -13,9 +14,9 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'ChatGpt',
+    title: 'Assistent',
     path: '/chat',
-    icon: icon('ic_analytics'),
+    icon: <Icon width={28} icon="hugeicons:ai-chat-02" />,
   },
   // {
   //   title: 'user',
