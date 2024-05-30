@@ -139,7 +139,7 @@ ColorlibStepIcon.propTypes = {
   icon: PropTypes.node,
 };
 
-const steps = ['Davomat', 'Ob-havo bilan tanishtirish', 'Video darslik', 'Test', 'Yakunlash'];
+const steps = ['Davomat', 'Ob-havo bilan tanishtirish', 'Video darslik', 'Tasdiqlash', 'Yakunlash'];
 
 export default function CustomizedSteppers({ activeStep }) {
   return (

@@ -6,7 +6,6 @@ import {
   TableCell,
   TableContainer,
   Chip,
-  Typography,
 } from '@mui/material';
 import { formatDate } from 'src/utils/format-time';
 import { error, success } from 'src/theme/palette';
@@ -18,7 +17,7 @@ import { useCookies } from 'react-cookie';
 import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
 
-function AttendanceTable({ finished = false, users, loading }) {
+function ConfirmationTable({ users, loading }) {
   const dispatch = useDispatch();
 
   const { id } = useParams();
@@ -32,6 +31,8 @@ function AttendanceTable({ finished = false, users, loading }) {
     [confirmingUsers, id]
   );
 
+  const attendtedUsers = useMemo(() => users?.filter((item) => item?.attendance), [users]);
+
   const handleConfirmUser = (user_id) => {
     dispatch(confirmUsersAttendance({ token: cookies?.access, id, data: { user_id } }));
   };
@@ -39,19 +40,18 @@ function AttendanceTable({ finished = false, users, loading }) {
   return (
     <TableContainer sx={{ position: 'relative' }}>
       {loading ? <BlurLoader /> : null}
-
       <Table>
         <TableHead>
           <TableRow>
             <TableCell>T/R</TableCell>
             <TableCell>Ism va familiyasi</TableCell>
             <TableCell>Kirish vaqti</TableCell>
-            <TableCell>Davomat</TableCell>
-            {!finished ? <TableCell width={50}>Amallar</TableCell> : <TableCell>Holati</TableCell>}
+            <TableCell>Holati</TableCell>
+            <TableCell width={50}>Amallar</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users?.map((item, index) => (
+          {attendtedUsers?.map((item, index) => (
             <TableRow key={item}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>
@@ -63,25 +63,12 @@ function AttendanceTable({ finished = false, users, loading }) {
                   variant="outlined"
                   sx={{
                     border: 'none',
-                    background: item?.attendance ? success.lighter : error.lighter,
+                    background: item?.confirmations ? success.lighter : error.lighter,
                   }}
-                  label={item?.attendance ? 'Qatnashgan' : 'Qatnashmagan'}
-                  color={item?.attendance ? 'success' : 'error'}
+                  label={item?.confirmations ? 'Tasdiqlangan' : 'Tasdiqlanmagan'}
+                  color={item?.confirmations ? 'success' : 'error'}
                 />
               </TableCell>
-              {finished ? (
-                <TableCell>
-                  <Chip
-                    variant="outlined"
-                    sx={{
-                      border: 'none',
-                      background: item?.confirmations ? success.lighter : error.lighter,
-                    }}
-                    label={item?.confirmations ? 'Tasdiqlangan' : 'Tasdiqlanmagan'}
-                    color={item?.confirmations ? 'success' : 'error'}
-                  />
-                </TableCell>
-              ) : null}
               <TableCell>
                 {!item?.confirmations ? (
                   <LoadingButton
@@ -103,4 +90,4 @@ function AttendanceTable({ finished = false, users, loading }) {
   );
 }
 
-export default AttendanceTable;
+export default ConfirmationTable;

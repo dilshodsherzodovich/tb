@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'react-cookie';
-import { getAllInstructions, getInstructionsDetails } from 'src/api/instruction';
+import { closeInstruction, getAllInstructions, getInstructionsDetails } from 'src/api/instruction';
 import CustomizedSteppers from '../stepper';
 import AttendanceTable from '../attendanceTable';
 import WeatherForecast from '../weatherForecast';
@@ -12,6 +12,8 @@ import VideoInstruction from '../videoinstruction';
 import Test from '../test';
 import { useParams } from 'react-router-dom/dist';
 import { End } from '../end';
+import ConfirmationTable from '../confirmationTbale';
+import FinshedInstruction from '../finshedInstruction';
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -23,6 +25,8 @@ function HomeView() {
   const [activeStep, setActiveStep] = useState(0);
 
   const [isNextDisabled, setIsNextDisabled] = useState(false);
+
+  const [weatherData, setWeatherData] = useState();
 
   const [answers, setAnswers] = useState([]);
 
@@ -36,17 +40,34 @@ function HomeView() {
 
   useEffect(() => {
     dispatch(getInstructionsDetails({ token: cookies?.access, id }));
+    fetch(
+      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tashkent?include=fcst%2Cobs%2Chistfcst%2Cstats%2Cdays%2Chours%2Ccurrent%2Calerts&key=3VUZ2V4BXUDXTG3JR9WMMH9HC&options=beta&contentType=json',
+      {
+        method: 'GET',
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => setWeatherData(data));
+    // eslint-disable-next-line
   }, []);
 
-  return (
+  // Define Uzbek month and day names
+
+  const handleCloseInst = () => {
+    dispatch(closeInstruction({ token: cookies.access, id, data: { status: true } }));
+  };
+
+  return detail?.status ? (
+    <FinshedInstruction />
+  ) : (
     <Container maxWidth="xl">
       <Box component="section" mb={5}>
         <CustomizedSteppers activeStep={activeStep} />
       </Box>
       {activeStep === 0 ? (
-        <AttendanceTable />
+        <AttendanceTable loading={detailLoading} users={detail?.participants} />
       ) : activeStep === 1 ? (
-        <WeatherForecast />
+        <WeatherForecast weatherData={weatherData} />
       ) : activeStep === 2 ? (
         <VideoInstruction
           video={detail?.video}
@@ -55,9 +76,14 @@ function HomeView() {
           enableNext={enableNext}
         />
       ) : activeStep === 3 ? (
-        <Test answers={answers} setAnswers={setAnswers} tests={detail?.tests} />
+        <ConfirmationTable users={detail?.participants} />
       ) : activeStep === 4 ? (
-        <End goBack={toPreviousStep} tests={detail?.tests} answers={answers} />
+        <End
+          finishInstruction={handleCloseInst}
+          goBack={toPreviousStep}
+          tests={detail?.tests}
+          answers={answers}
+        />
       ) : null}
 
       <Stack mt={5} direction="row" justifyContent="space-between">

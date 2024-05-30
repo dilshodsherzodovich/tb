@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { useHttp } from 'src/hooks/use-http';
 
-const getAllInstructions = createAsyncThunk('instruction/getAll', async ({ token }) => {
+const getAllInstructions = createAsyncThunk('instruction/get', async ({ token }) => {
   const { request } = useHttp();
   return request({
     url: '/instruction/',
@@ -21,4 +21,34 @@ const getInstructionsDetails = createAsyncThunk('instruction/detail', async ({ t
   });
 });
 
-export { getAllInstructions, getInstructionsDetails };
+const confirmUsersAttendance = createAsyncThunk(
+  'instruction/detail/confirm',
+  async ({ token, id, data }) => {
+    const { request } = useHttp();
+    return request({
+      method: 'POST',
+      data,
+      url: `/instruction/worker/${id}/confirm/`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+);
+
+const closeInstruction = createAsyncThunk(
+  'instruction/detail/close',
+  async ({ token, id, data }) => {
+    const { request } = useHttp();
+    return request({
+      method: 'PATCH',
+      data,
+      url: `/instruction/detail/${id}/`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+);
+
+export { closeInstruction, getAllInstructions, getInstructionsDetails, confirmUsersAttendance };

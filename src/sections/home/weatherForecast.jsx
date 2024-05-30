@@ -19,22 +19,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { convertCelciumFromFarad } from 'src/utils/convertCelciumfromFarad';
 
-function WeatherForecast() {
-  const [weatherData, setWeatherData] = useState();
-
-  // Define Uzbek month and day names
-
-  useEffect(() => {
-    fetch(
-      'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tashkent?include=fcst%2Cobs%2Chistfcst%2Cstats%2Cdays%2Chours%2Ccurrent%2Calerts&key=3VUZ2V4BXUDXTG3JR9WMMH9HC&options=beta&contentType=json',
-      {
-        method: 'GET',
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => setWeatherData(data));
-  }, []);
-
+function WeatherForecast({ weatherData }) {
   const hours = useMemo(() => {
     if (!weatherData?.days?.length) return [];
     return weatherData?.days[0]?.hours;

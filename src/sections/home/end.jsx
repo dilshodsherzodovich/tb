@@ -1,27 +1,45 @@
+import { LoadingButton } from '@mui/lab';
 import { Box, Button, Stack, Typography } from '@mui/material';
-import { useMemo } from 'react';
-import { Link } from 'react-router-dom/dist';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { clearCloseRes } from 'src/redux/slices/instruction.slice';
 
-export function End({ answers, tests, goBack }) {
-  const testsList = useMemo(() => {
-    if (!tests?.find((_, index) => index === 0)?.questions?.length) return [];
-    return tests[0].questions;
-  }, [tests]);
+export function End({ goBack, finishInstruction }) {
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+
+  const { closeRes, closing } = useSelector((state) => state.instructions);
+
+  useEffect(() => {
+    if (!closeRes?.id) return;
+    dispatch(clearCloseRes());
+    toast.success('Instruksiya muvaffaqiyatli tugatildi');
+    navigate('/');
+
+    // eslint-disable-next-line
+  }, [closeRes]);
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Typography>E'tiboringiz uchun rahmat</Typography>
-      <Typography variant="h3">
-        Sizning natijagiz {answers?.filter((item) => item?.is_correct)?.length}
-        {' / '}
-        {testsList?.length}
+      <Typography variant="h4" my={2}>
+        Haqiqatdan ham yakunlamoqchimisiz
       </Typography>
+
       <Stack direction="row" gap={2}>
-        <Link to="/">
-          <Button variant="contained">Instruksiyalar ro'yxatiga qaytish</Button>
-        </Link>
         <Button onClick={goBack} variant="outlined">
-          Testni qayta boshlash
+          Ortga
         </Button>
+        <LoadingButton
+          loading={closing}
+          color="error"
+          onClick={finishInstruction}
+          variant="contained"
+        >
+          Yakunlash
+        </LoadingButton>
       </Stack>
     </Box>
   );

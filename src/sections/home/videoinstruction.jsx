@@ -1,5 +1,6 @@
-import { Box, Container } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+/* eslint-disable no-unused-expressions */
+import { Container } from '@mui/material';
+import React, { useEffect } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 
@@ -17,6 +18,7 @@ const VideoJS = (props) => {
       videoElement.classList.add('vjs-big-play-centered');
       videoRef.current.appendChild(videoElement);
 
+      // eslint-disable-next-line
       const player = (playerRef.current = videojs(videoElement, options, () => {
         videojs.log('player is ready');
         onReady && onReady(player);
@@ -53,7 +55,7 @@ const VideoJS = (props) => {
   );
 };
 
-function VideoInstruction({ disableNext, enableNext, video }) {
+function VideoInstruction({ disableNext = () => {}, enableNext = () => {}, video }) {
   const playerRef = React.useRef(null);
 
   useEffect(() => {
