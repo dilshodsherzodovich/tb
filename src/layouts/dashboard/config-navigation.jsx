@@ -11,12 +11,12 @@ const navConfig = [
   {
     title: 'Instruksiya',
     path: '/',
-    icon: icon('ic_analytics'),
+    icon: <Icon width={25} icon="mingcute:classify-2-fill" />,
   },
   {
     title: 'Assistent',
     path: '/chat',
-    icon: <Icon width={28} icon="hugeicons:ai-chat-02" />,
+    icon: <Icon width={25} icon="hugeicons:ai-chat-02" />,
   },
   // {
   //   title: 'user',
