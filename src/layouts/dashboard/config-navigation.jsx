@@ -18,31 +18,32 @@ const navConfig = [
     path: '/chat',
     icon: <Icon width={25} icon="hugeicons:ai-chat-02" />,
   },
-  // {
-  //   title: 'user',
-  //   path: '/user',
-  //   icon: icon('ic_user'),
-  // },
-  // {
-  //   title: 'product',
-  //   path: '/products',
-  //   icon: icon('ic_cart'),
-  // },
-  // {
-  //   title: 'blog',
-  //   path: '/blog',
-  //   icon: icon('ic_blog'),
-  // },
-  // {
-  //   title: 'login',
-  //   path: '/login',
-  //   icon: icon('ic_lock'),
-  // },
-  // {
-  //   title: 'Not found',
-  //   path: '/404',
-  //   icon: icon('ic_disabled'),
-  // },
+  {
+    title: 'Sozlamalar',
+    icon: <Icon width={25} icon="hugeicons:ai-chat-02" />,
+    collapse: [
+      {
+        title: `Lokomotiv rusumlari`,
+        path: '/train-types',
+      },
+      {
+        title: `Texnik ko'rik turi`,
+        path: '/corrective_type',
+      },
+      {
+        title: `Qo'llanmalar`,
+        path: '/instructions',
+      },
+      {
+        title: 'Jihoz turlari',
+        path: '/equipment_type',
+      },
+      {
+        title: 'Ehtiyot qismlar',
+        path: '/spares',
+      },
+    ],
+  },
 ];
 
 export default navConfig;

@@ -6,19 +6,17 @@ import {
   TableCell,
   TableContainer,
   Chip,
-  Typography,
 } from '@mui/material';
-import { formatDate } from 'src/utils/format-time';
 import { error, success } from 'src/theme/palette';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { confirmUsersAttendance } from 'src/api/instruction';
+import { addNewAttendance, confirmUsersAttendance } from 'src/api/instruction';
 import { useCookies } from 'react-cookie';
 import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
 
-function AttendanceTable({ finished = false, users, loading }) {
+function AttendanceTable({ finished, users, loading }) {
   const dispatch = useDispatch();
 
   const { id } = useParams();
@@ -36,6 +34,31 @@ function AttendanceTable({ finished = false, users, loading }) {
     dispatch(confirmUsersAttendance({ token: cookies?.access, id, data: { user_id } }));
   };
 
+  useEffect(() => {
+    if (finished) return;
+    dispatch(
+      addNewAttendance({
+        token: cookies?.access,
+        data: [
+          {
+            user_attendance: true,
+            confirmations: false,
+            participants: id,
+            users: 'b38cd208-e072-451a-a741-7128e5924d69',
+          },
+          {
+            user_attendance: true,
+            confirmations: false,
+            participants: id,
+            users: '6f6b9779-6255-48a6-bfdd-cf1e9185a5a2',
+          },
+        ],
+      })
+    );
+
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <TableContainer sx={{ position: 'relative' }}>
       {loading ? <BlurLoader /> : null}
@@ -45,7 +68,6 @@ function AttendanceTable({ finished = false, users, loading }) {
           <TableRow>
             <TableCell>T/R</TableCell>
             <TableCell>Ism va familiyasi</TableCell>
-            <TableCell>Kirish vaqti</TableCell>
             <TableCell>Davomat</TableCell>
             {!finished ? <TableCell width={50}>Amallar</TableCell> : <TableCell>Holati</TableCell>}
           </TableRow>
@@ -55,18 +77,17 @@ function AttendanceTable({ finished = false, users, loading }) {
             <TableRow key={item}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>
-                {item?.user?.first_name} {item?.user?.last_name}
+                {item?.users?.first_name} {item?.users?.last_name}
               </TableCell>
-              <TableCell>{formatDate(new Date())}</TableCell>
               <TableCell>
                 <Chip
                   variant="outlined"
                   sx={{
                     border: 'none',
-                    background: item?.attendance ? success.lighter : error.lighter,
+                    background: item?.user_attendance ? success.lighter : error.lighter,
                   }}
-                  label={item?.attendance ? 'Qatnashgan' : 'Qatnashmagan'}
-                  color={item?.attendance ? 'success' : 'error'}
+                  label={item?.user_attendance ? 'Qatnashgan' : 'Qatnashmagan'}
+                  color={item?.user_attendance ? 'success' : 'error'}
                 />
               </TableCell>
               {finished ? (
@@ -82,8 +103,9 @@ function AttendanceTable({ finished = false, users, loading }) {
                   />
                 </TableCell>
               ) : null}
-              <TableCell>
-                {!item?.attendance ? (
+
+              {!item?.user_attendance ? (
+                <TableCell>
                   <LoadingButton
                     loading={activeInstructionsConfirmingUsers?.includes(item?.user?.id)}
                     onClick={() => handleConfirmUser(item?.user?.id)}
@@ -93,8 +115,8 @@ function AttendanceTable({ finished = false, users, loading }) {
                   >
                     Tasdiqlash
                   </LoadingButton>
-                ) : null}
-              </TableCell>
+                </TableCell>
+              ) : null}
             </TableRow>
           ))}
         </TableBody>

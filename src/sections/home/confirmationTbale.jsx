@@ -31,10 +31,16 @@ function ConfirmationTable({ users, loading }) {
     [confirmingUsers, id]
   );
 
-  const attendtedUsers = useMemo(() => users?.filter((item) => item?.attendance), [users]);
+  const attendtedUsers = useMemo(() => users?.filter((item) => item?.user_attendance), [users]);
 
-  const handleConfirmUser = (user_id) => {
-    dispatch(confirmUsersAttendance({ token: cookies?.access, id, data: { user_id } }));
+  const handleConfirmUser = (attendace_id) => {
+    dispatch(
+      confirmUsersAttendance({
+        token: cookies?.access,
+        id: attendace_id,
+        data: { confirmations: true },
+      })
+    );
   };
 
   return (
@@ -55,7 +61,7 @@ function ConfirmationTable({ users, loading }) {
             <TableRow key={item}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>
-                {item?.user?.first_name} {item?.user?.last_name}
+                {item?.users?.first_name} {item?.users?.last_name}
               </TableCell>
               <TableCell>{formatDate(new Date())}</TableCell>
               <TableCell>
@@ -72,8 +78,8 @@ function ConfirmationTable({ users, loading }) {
               <TableCell>
                 {!item?.confirmations ? (
                   <LoadingButton
-                    loading={activeInstructionsConfirmingUsers?.includes(item?.user?.id)}
-                    onClick={() => handleConfirmUser(item?.user?.id)}
+                    loading={activeInstructionsConfirmingUsers?.includes(item?.users?.id)}
+                    onClick={() => handleConfirmUser(item?.id)}
                     variant="contained"
                     color="info"
                     size="small"

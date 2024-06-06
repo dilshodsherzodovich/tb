@@ -13,7 +13,7 @@ function FinshedInstruction() {
       <Typography my={2} variant="h5">
         Qatnashgan ishchilar
       </Typography>
-      <AttendanceTable finished loading={detailLoading} users={detail?.participants} />
+      <AttendanceTable finished loading={detailLoading} users={detail?.attendance} />
       <Typography my={2} mt={6} variant="h5">
         Video darslik
       </Typography>

@@ -1,14 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  addNewAttendance,
   closeInstruction,
   confirmUsersAttendance,
   getAllInstructions,
+  getInstructionCategories,
   getInstructionsDetails,
+  startNewInstruction,
 } from 'src/api/instruction';
 
 const initialState = {
   instrctions: [],
   instructionsLoading: false,
+
+  // create
+  creating: false,
+  createRes: {},
+
+  // categories
+  categories: [],
+  categoriesLoading: false,
 
   detail: {},
   detailLoading: false,
@@ -17,6 +28,10 @@ const initialState = {
   confirmAttendanceRes: {},
   confirmAttendanceLoading: false,
   confirmingUsers: [],
+
+  // create attendance
+  createAttendance: {},
+  creatingAttendance: false,
 
   // close instruction
   closeRes: {},
@@ -31,6 +46,14 @@ const instructionSlice = createSlice({
       state.closeRes = {};
       state.closing = false;
     },
+    clearCreateRes: (state) => {
+      state.createRes = {};
+      state.creating = false;
+    },
+    clearCreateAttendanceRes: (state) => {
+      state.createAttendance = {};
+      state.creatingAttendance = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -42,6 +65,41 @@ const instructionSlice = createSlice({
         state.instructionsLoading = false;
       })
       .addCase(getAllInstructions.rejected, (state) => {
+        state.instructionsLoading = false;
+      })
+
+      // create
+      .addCase(startNewInstruction.pending, (state) => {
+        state.creating = true;
+      })
+      .addCase(startNewInstruction.fulfilled, (state, action) => {
+        state.createRes = action.payload;
+        state.creating = false;
+      })
+      .addCase(startNewInstruction.rejected, (state) => {
+        state.creating = false;
+      })
+
+      // create attendance
+      .addCase(addNewAttendance.pending, (state) => {
+        state.creatingAttendance = true;
+      })
+      .addCase(addNewAttendance.fulfilled, (state, action) => {
+        state.createAttendance = action.payload;
+        state.creatingAttendance = false;
+      })
+      .addCase(addNewAttendance.rejected, (state) => {
+        state.creatingAttendance = false;
+      })
+
+      .addCase(getInstructionCategories.pending, (state) => {
+        state.categoriesLoading = true;
+      })
+      .addCase(getInstructionCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+        state.categoriesLoading = false;
+      })
+      .addCase(getInstructionCategories.rejected, (state) => {
         state.instructionsLoading = false;
       })
 
@@ -72,14 +130,10 @@ const instructionSlice = createSlice({
         }
       })
       .addCase(confirmUsersAttendance.fulfilled, (state, action) => {
-        state.detail = action.payload.instruction;
-        state.confirmAttendanceLoading = false;
-        const instructionIdx = state.confirmingUsers?.findIndex(
-          (item) => item?.id === action.meta.arg.id
+        const attendanceIdx = state.detail.attendance?.findIndex(
+          (item) => item?.id === action.payload.id
         );
-        state.confirmingUsers[instructionIdx].users = state.confirmingUsers[
-          instructionIdx
-        ].users?.filter((item) => item !== action.meta.arg.data?.user_id);
+        state.detail.attendance[attendanceIdx] = action.payload;
       })
       .addCase(confirmUsersAttendance.rejected, (state) => {
         state.confirmAttendanceLoading = false;
@@ -98,5 +152,5 @@ const instructionSlice = createSlice({
   },
 });
 
-export const { clearCloseRes } = instructionSlice.actions;
+export const { clearCloseRes, clearCreateRes, clearCreateAttendanceRes } = instructionSlice.actions;
 export default instructionSlice.reducer;

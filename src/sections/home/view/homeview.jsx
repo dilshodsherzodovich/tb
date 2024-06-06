@@ -54,10 +54,10 @@ function HomeView() {
   // Define Uzbek month and day names
 
   const handleCloseInst = () => {
-    dispatch(closeInstruction({ token: cookies.access, id, data: { status: true } }));
+    dispatch(closeInstruction({ token: cookies.access, id, data: { completed: true } }));
   };
 
-  return detail?.status ? (
+  return detail?.completed ? (
     <FinshedInstruction />
   ) : (
     <Container maxWidth="xl">
@@ -65,7 +65,7 @@ function HomeView() {
         <CustomizedSteppers activeStep={activeStep} />
       </Box>
       {activeStep === 0 ? (
-        <AttendanceTable loading={detailLoading} users={detail?.participants} />
+        <AttendanceTable loading={detailLoading} users={detail?.attendance} />
       ) : activeStep === 1 ? (
         <WeatherForecast weatherData={weatherData} />
       ) : activeStep === 2 ? (
@@ -76,7 +76,7 @@ function HomeView() {
           enableNext={enableNext}
         />
       ) : activeStep === 3 ? (
-        <ConfirmationTable users={detail?.participants} />
+        <ConfirmationTable users={detail?.attendance} />
       ) : activeStep === 4 ? (
         <End
           finishInstruction={handleCloseInst}

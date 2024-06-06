@@ -2,10 +2,25 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { isUndefined } from 'lodash';
 import { useHttp } from 'src/hooks/use-http';
 
-const getAllInstructions = createAsyncThunk('instruction/get', async ({ token, status }) => {
+const getAllInstructions = createAsyncThunk(
+  'instruction/getParticipants',
+  async ({ token, categoryId, status, date }) => {
+    const { request } = useHttp();
+    return request({
+      url: `/instruction/participants/list/create/?category_id=${categoryId}${
+        !isUndefined(status) ? `&status=${status}` : ''
+      }${date ? `&date_created=${date}` : ''}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+);
+
+const getInstructionCategories = createAsyncThunk('instruction/categores', async ({ token }) => {
   const { request } = useHttp();
   return request({
-    url: `/instruction/${!isUndefined(status) ? `?status=${status}` : ''}`,
+    url: `/instruction/category/list/`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -15,7 +30,19 @@ const getAllInstructions = createAsyncThunk('instruction/get', async ({ token, s
 const getInstructionsDetails = createAsyncThunk('instruction/detail', async ({ token, id }) => {
   const { request } = useHttp();
   return request({
-    url: `/instruction/detail/${id}/`,
+    url: `/instruction/participants/detail/${id}/`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+});
+
+const startNewInstruction = createAsyncThunk('instruction/add', async ({ token, data }) => {
+  const { request } = useHttp();
+  return request({
+    method: 'POST',
+    data,
+    url: `/instruction/participants/list/create/`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -27,15 +54,27 @@ const confirmUsersAttendance = createAsyncThunk(
   async ({ token, id, data }) => {
     const { request } = useHttp();
     return request({
-      method: 'POST',
+      method: 'PATCH',
       data,
-      url: `/instruction/worker/${id}/confirm/`,
+      url: `/instruction/attendance/${id}/patch/`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
   }
 );
+
+const addNewAttendance = createAsyncThunk('instruction/addNew', async ({ token, data }) => {
+  const { request } = useHttp();
+  return request({
+    method: 'POST',
+    data,
+    url: `/instruction/attendance/list/create/`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+});
 
 const closeInstruction = createAsyncThunk(
   'instruction/detail/close',
@@ -44,7 +83,7 @@ const closeInstruction = createAsyncThunk(
     return request({
       method: 'PATCH',
       data,
-      url: `/instruction/detail/${id}/`,
+      url: `/instruction/participants/detail/${id}/`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -52,4 +91,12 @@ const closeInstruction = createAsyncThunk(
   }
 );
 
-export { closeInstruction, getAllInstructions, getInstructionsDetails, confirmUsersAttendance };
+export {
+  closeInstruction,
+  addNewAttendance,
+  getAllInstructions,
+  startNewInstruction,
+  getInstructionsDetails,
+  confirmUsersAttendance,
+  getInstructionCategories,
+};
