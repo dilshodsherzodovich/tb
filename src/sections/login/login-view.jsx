@@ -52,6 +52,11 @@ export default function LoginView() {
         secure: 'tb',
         path: '/',
       });
+      setCookie('role', user?.data?.role, {
+        maxAge: 30 * 24 * 3600,
+        secure: 'tb',
+        path: '/',
+      });
       dispatch(clearUser());
       router.push('/');
     }

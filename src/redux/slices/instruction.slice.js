@@ -4,6 +4,7 @@ import {
   closeInstruction,
   confirmUsersAttendance,
   getAllInstructions,
+  getAllWorkShops,
   getInstructionCategories,
   getInstructionsDetails,
   startNewInstruction,
@@ -21,6 +22,7 @@ const initialState = {
   categories: [],
   categoriesLoading: false,
 
+  // detail
   detail: {},
   detailLoading: false,
 
@@ -32,6 +34,10 @@ const initialState = {
   // create attendance
   createAttendance: {},
   creatingAttendance: false,
+
+  // workshops
+  workshops: [],
+  workshopsLoading: false,
 
   // close instruction
   closeRes: {},
@@ -66,6 +72,18 @@ const instructionSlice = createSlice({
       })
       .addCase(getAllInstructions.rejected, (state) => {
         state.instructionsLoading = false;
+      })
+
+      // workshops
+      .addCase(getAllWorkShops.pending, (state) => {
+        state.workshopsLoading = true;
+      })
+      .addCase(getAllWorkShops.fulfilled, (state, action) => {
+        state.workshops = action.payload;
+        state.workshopsLoading = false;
+      })
+      .addCase(getAllWorkShops.rejected, (state) => {
+        state.workshopsLoading = false;
       })
 
       // create

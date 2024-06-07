@@ -29,7 +29,7 @@ export const formatCurrentDate = () => {
   // Format the date and time
   const formattedDateTime = `${now.getDate()}-${
     uzbekMonths[now.getMonth()]
-  } ${now.getFullYear()}-yil. ${uzbekDays[now.getDay()]} ${String(now.getHours()).padStart(
+  } ${now.getFullYear()}-yil. ${uzbekDays[now.getDay() - 1]} ${String(now.getHours()).padStart(
     2,
     '0'
   )}:${String(now.getMinutes()).padStart(2, '0')}`;

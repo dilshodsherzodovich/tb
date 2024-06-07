@@ -58,10 +58,12 @@ export default function Nav({ openNav, onCloseNav }) {
 
   useEffect(() => {
     if (!categories?.length) return;
-    navigate(`/category/${categories[0].id}`);
+    if (pathname === '/') {
+      navigate(`/category/${categories[0].id}`);
+    }
 
     // eslint-disable-next-line
-  }, [categories]);
+  }, [categories, pathname]);
 
   const allRoutes = useMemo(
     () =>

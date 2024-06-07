@@ -4,12 +4,12 @@ import { useHttp } from 'src/hooks/use-http';
 
 const getAllInstructions = createAsyncThunk(
   'instruction/getParticipants',
-  async ({ token, categoryId, status, date }) => {
+  async ({ token, categoryId, status, date, workshop }) => {
     const { request } = useHttp();
     return request({
       url: `/instruction/participants/list/create/?category_id=${categoryId}${
         !isUndefined(status) ? `&status=${status}` : ''
-      }${date ? `&date_created=${date}` : ''}`,
+      }${date ? `&date_created=${date}` : ''}${workshop ? `&workshop_id=${workshop}` : ''}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,17 +37,22 @@ const getInstructionsDetails = createAsyncThunk('instruction/detail', async ({ t
   });
 });
 
-const startNewInstruction = createAsyncThunk('instruction/add', async ({ token, data }) => {
-  const { request } = useHttp();
-  return request({
-    method: 'POST',
-    data,
-    url: `/instruction/participants/list/create/`,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-});
+const startNewInstruction = createAsyncThunk(
+  'instruction/add',
+  async ({ token, data, workshop_id }) => {
+    const { request } = useHttp();
+    return request({
+      method: 'POST',
+      data,
+      url: `/instruction/participants/list/create/${
+        workshop_id ? `?workshop_id=${workshop_id}` : ''
+      }`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+);
 
 const confirmUsersAttendance = createAsyncThunk(
   'instruction/detail/confirm',
@@ -91,7 +96,19 @@ const closeInstruction = createAsyncThunk(
   }
 );
 
+const getAllWorkShops = createAsyncThunk('instruction/workshops', async ({ token }) => {
+  const { request } = useHttp();
+  return request({
+    method: 'GET',
+    url: `/workshop/`,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+});
+
 export {
+  getAllWorkShops,
   closeInstruction,
   addNewAttendance,
   getAllInstructions,

@@ -28,28 +28,30 @@ export default function InstructionsTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {instrctions?.map((item, index) => (
-            <TableRow key={item?.id}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>
-                <Link to={`/instructions/${item?.id}`} style={{ textDecoration: 'none' }}>
-                  {formatDate(item?.created_at)}
-                </Link>
-              </TableCell>
+          {instrctions?.length > 0
+            ? [...instrctions]?.reverse().map((item, index) => (
+                <TableRow key={item?.id}>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>
+                    <Link to={`/instructions/${item?.id}`} style={{ textDecoration: 'none' }}>
+                      {formatDate(item?.created_at)}
+                    </Link>
+                  </TableCell>
 
-              <TableCell>
-                <Chip
-                  variant="outlined"
-                  sx={{
-                    border: 'none',
-                    background: item?.completed ? success.lighter : warning?.lighter,
-                  }}
-                  label={item?.completed ? 'Tugallangan' : 'Tugallanmagan'}
-                  color={item?.completed ? 'success' : 'warning'}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+                  <TableCell>
+                    <Chip
+                      variant="outlined"
+                      sx={{
+                        border: 'none',
+                        background: item?.completed ? success.lighter : warning?.lighter,
+                      }}
+                      label={item?.completed ? 'Tugallangan' : 'Tugallanmagan'}
+                      color={item?.completed ? 'success' : 'warning'}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+            : null}
         </TableBody>
       </Table>
     </TableContainer>
