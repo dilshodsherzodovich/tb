@@ -187,7 +187,7 @@ export default function InstructionsView() {
                 sx={{ mt: 2 }}
                 loading={creating}
               >
-                Qo'shish
+                Qo&apos;shish
               </LoadingButton>
             </Card>
           </Backdrop>

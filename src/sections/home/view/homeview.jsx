@@ -14,6 +14,7 @@ import { useParams } from 'react-router-dom/dist';
 import { End } from '../end';
 import ConfirmationTable from '../confirmationTbale';
 import FinshedInstruction from '../finshedInstruction';
+import { faceRecognition } from 'src/api/auth';
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function HomeView() {
 
   useEffect(() => {
     dispatch(getInstructionsDetails({ token: cookies?.access, id }));
+    dispatch(faceRecognition({ token: cookies?.access }));
     fetch(
       'https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Tashkent?include=fcst%2Cobs%2Chistfcst%2Cstats%2Cdays%2Chours%2Ccurrent%2Calerts&key=3VUZ2V4BXUDXTG3JR9WMMH9HC&options=beta&contentType=json',
       {

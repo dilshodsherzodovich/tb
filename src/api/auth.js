@@ -10,4 +10,15 @@ const login = createAsyncThunk('auth/login', async ({ data }) => {
   });
 });
 
-export { login };
+const faceRecognition = createAsyncThunk('auth/face-regonition', async ({ token }) => {
+  const { request } = useHttp();
+  return request({
+    method: 'POST',
+    url: '/account/face-recognition/',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+});
+
+export { login, faceRecognition };

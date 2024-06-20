@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { login } from 'src/api/auth';
+import { faceRecognition, login } from 'src/api/auth';
 
 const initialState = {
   loading: false,
   user: {},
+
+  // face recognition
+  face: {},
+  faceLoading: false,
 };
 
 const loginSlice = createSlice({
@@ -12,6 +16,10 @@ const loginSlice = createSlice({
   reducers: {
     clearUser: (state) => {
       state.user = {};
+    },
+    clearFace: (state) => {
+      state.face = {};
+      state.faceLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -25,9 +33,21 @@ const loginSlice = createSlice({
       })
       .addCase(login.rejected, (state) => {
         state.loading = false;
+      })
+
+      // face-recognition
+      .addCase(faceRecognition.pending, (state) => {
+        state.faceLoading = true;
+      })
+      .addCase(faceRecognition.fulfilled, (state, action) => {
+        state.face = action.payload;
+        state.faceLoading = false;
+      })
+      .addCase(faceRecognition.rejected, (state) => {
+        state.faceLoading = false;
       });
   },
 });
 
-export const { clearUser } = loginSlice.actions;
+export const { clearUser, clearFace } = loginSlice.actions;
 export default loginSlice.reducer;
