@@ -1,2 +1,11 @@
 /* scrollbar */
 @import 'simplebar-react/dist/simplebar.min.css';
+
+@keyframes scaleUp {
+  from {
+    scale: 1;
+  }
+  to {
+    scale: 0.3;
+  }
+}

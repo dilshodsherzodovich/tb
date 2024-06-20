@@ -6,15 +6,19 @@ import {
   TableCell,
   TableContainer,
   Chip,
+  Button,
 } from '@mui/material';
 import { error, success } from 'src/theme/palette';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addNewAttendance, confirmUsersAttendance } from 'src/api/instruction';
 import { useCookies } from 'react-cookie';
 import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
+import { faceRecognition } from 'src/api/auth';
+import { isString } from 'lodash';
+import { toast } from 'react-toastify';
 
 function AttendanceTable({ finished, users, loading }) {
   const dispatch = useDispatch();
@@ -23,7 +27,7 @@ function AttendanceTable({ finished, users, loading }) {
 
   const [cookies] = useCookies();
 
-  const { confirmingUsers } = useSelector((state) => state.instructions);
+  const { confirmingUsers, lastUser } = useSelector((state) => state.instructions);
 
   const activeInstructionsConfirmingUsers = useMemo(
     () => confirmingUsers?.find((item) => item?.id === id)?.users,
@@ -35,7 +39,18 @@ function AttendanceTable({ finished, users, loading }) {
   };
 
   useEffect(() => {
-    if (finished) return;
+    if (isString(lastUser)) {
+      toast.warning(lastUser);
+    }
+    setTimeout(() => {
+      dispatch(faceRecognition({ token: cookies?.access }));
+    }, 500);
+
+    if (finished || !lastUser?.id) return;
+    if (users?.map((item) => item?.users?.id)?.includes(lastUser?.id)) {
+      toast.info("Siz allaqachon ro'yxatdan borsiz");
+      return;
+    }
     dispatch(
       addNewAttendance({
         token: cookies?.access,
@@ -44,20 +59,14 @@ function AttendanceTable({ finished, users, loading }) {
             user_attendance: true,
             confirmations: false,
             participants: id,
-            users: 'b38cd208-e072-451a-a741-7128e5924d69',
-          },
-          {
-            user_attendance: true,
-            confirmations: false,
-            participants: id,
-            users: '6f6b9779-6255-48a6-bfdd-cf1e9185a5a2',
+            users: lastUser?.id,
           },
         ],
       })
     );
 
     // eslint-disable-next-line
-  }, []);
+  }, [lastUser]);
 
   return (
     <TableContainer sx={{ position: 'relative' }}>
@@ -77,7 +86,7 @@ function AttendanceTable({ finished, users, loading }) {
             <TableRow key={item}>
               <TableCell>{index + 1}</TableCell>
               <TableCell>
-                {item?.users?.first_name} {item?.users?.last_name}
+                {item?.users?.first_name || item?.user?.username} {item?.users?.last_name}
               </TableCell>
               <TableCell>
                 <Chip
@@ -108,7 +117,6 @@ function AttendanceTable({ finished, users, loading }) {
                 <TableCell>
                   <LoadingButton
                     loading={activeInstructionsConfirmingUsers?.includes(item?.user?.id)}
-                    onClick={() => handleConfirmUser(item?.user?.id)}
                     variant="contained"
                     color="info"
                     size="small"

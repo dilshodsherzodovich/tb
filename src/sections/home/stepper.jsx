@@ -9,7 +9,10 @@ import StepLabel from '@mui/material/StepLabel';
 import { VideoLabel, Settings, GroupAdd, Check } from '@mui/icons-material';
 
 import StepConnector, { stepConnectorClasses } from '@mui/material/StepConnector';
-import { Container, StepButton } from '@mui/material';
+import Recorder from '../../../public/assets/icons/record.svg';
+import { Box, Container, StepButton, Typography } from '@mui/material';
+import './animation.css';
+import { useSelector } from 'react-redux';
 
 const QontoConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
@@ -142,15 +145,27 @@ ColorlibStepIcon.propTypes = {
 const steps = ['Davomat', 'Ob-havo bilan tanishtirish', 'Video darslik', 'Tasdiqlash', 'Yakunlash'];
 
 export default function CustomizedSteppers({ activeStep }) {
+  const { isCameraOn } = useSelector((state) => state.instructions);
+
   return (
-    <Stack sx={{ width: '100%' }} spacing={4}>
-      <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepButton StepIconComponent={QontoStepIcon}>{label}</StepButton>
-          </Step>
-        ))}
-      </Stepper>
+    <Stack direction="row" sx={{ width: '100%' }} spacing={4}>
+      <Box width="100%">
+        <Stepper alternativeLabel activeStep={activeStep} connector={<QontoConnector />}>
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepButton StepIconComponent={QontoStepIcon}>{label}</StepButton>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+      {isCameraOn ? (
+        <Box>
+          <Box display="flex" alignItems="center" gap={1}>
+            <div className="blob"></div>
+            <Typography>REC</Typography>
+          </Box>
+        </Box>
+      ) : null}
     </Stack>
   );
 }

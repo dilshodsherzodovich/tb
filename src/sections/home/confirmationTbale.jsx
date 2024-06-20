@@ -9,13 +9,15 @@ import {
 } from '@mui/material';
 import { formatDate } from 'src/utils/format-time';
 import { error, success } from 'src/theme/palette';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { confirmUsersAttendance } from 'src/api/instruction';
 import { useCookies } from 'react-cookie';
 import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
+import { faceRecognition } from 'src/api/auth';
+import { toast } from 'react-toastify';
 
 function ConfirmationTable({ users, loading }) {
   const dispatch = useDispatch();
@@ -24,12 +26,26 @@ function ConfirmationTable({ users, loading }) {
 
   const [cookies] = useCookies();
 
-  const { confirmingUsers } = useSelector((state) => state.instructions);
+  const { confirmingUsers, lastUser } = useSelector((state) => state.instructions);
+
+  const [checkingUser, setCheckingUser] = useState(null);
 
   const activeInstructionsConfirmingUsers = useMemo(
     () => confirmingUsers?.find((item) => item?.id === id)?.users,
     [confirmingUsers, id]
   );
+
+  useEffect(() => {
+    console.log(checkingUser, lastUser);
+    if (!lastUser?.id || !checkingUser?.users) return;
+    if (checkingUser?.users?.id !== lastUser?.id) {
+      toast?.warning("Bu foydalanuvchi siz emassiz, iltimos o'zingizni ma'lumotingizni tasdiqlang");
+      setCheckingUser(null);
+    } else {
+      handleConfirmUser(checkingUser?.id);
+      setCheckingUser(null);
+    }
+  }, [checkingUser, lastUser]);
 
   const attendtedUsers = useMemo(() => users?.filter((item) => item?.user_attendance), [users]);
 
@@ -42,6 +58,12 @@ function ConfirmationTable({ users, loading }) {
       })
     );
   };
+
+  const handleRequestFaceRecognition = () => {
+    dispatch(faceRecognition({ token: cookies?.access }));
+  };
+
+  // handleConfirmUser(item?.id)
 
   return (
     <TableContainer sx={{ position: 'relative' }}>
@@ -79,7 +101,10 @@ function ConfirmationTable({ users, loading }) {
                 {!item?.confirmations ? (
                   <LoadingButton
                     loading={activeInstructionsConfirmingUsers?.includes(item?.users?.id)}
-                    onClick={() => handleConfirmUser(item?.id)}
+                    onClick={() => {
+                      setCheckingUser(item);
+                      handleRequestFaceRecognition();
+                    }}
                     variant="contained"
                     color="info"
                     size="small"

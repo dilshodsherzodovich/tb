@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { faceRecognition } from 'src/api/auth';
 import {
   addNewAttendance,
   closeInstruction,
@@ -39,9 +40,16 @@ const initialState = {
   workshops: [],
   workshopsLoading: false,
 
+  // const lastUserAddedtoAttendance
+  lastUser: {},
+  lastUserLoading: false,
+
   // close instruction
   closeRes: {},
   closing: false,
+
+  //
+  isCameraOn: false,
 };
 
 const instructionSlice = createSlice({
@@ -103,7 +111,14 @@ const instructionSlice = createSlice({
         state.creatingAttendance = true;
       })
       .addCase(addNewAttendance.fulfilled, (state, action) => {
-        state.createAttendance = action.payload;
+        action?.payload?.forEach((item) => {
+          const attendanceIdx = state.detail.attendance?.findIndex((att) => att?.id === item?.id);
+          if (attendanceIdx >= 0) {
+            state.detail.attendance[attendanceIdx] = item;
+          } else {
+            state.detail.attendance.push(item);
+          }
+        });
         state.creatingAttendance = false;
       })
       .addCase(addNewAttendance.rejected, (state) => {
@@ -166,6 +181,18 @@ const instructionSlice = createSlice({
       })
       .addCase(closeInstruction.rejected, (state) => {
         state.closing = false;
+      })
+
+      .addCase(faceRecognition.pending, (state, action) => {
+        state.isCameraOn = true;
+      })
+      .addCase(faceRecognition.fulfilled, (state, action) => {
+        state.lastUser = action.payload?.user || action.payload.message;
+        state.isCameraOn = false;
+      })
+      .addCase(faceRecognition.rejected, (state, action) => {
+        state.lastUser = 'last';
+        state.isCameraOn = false;
       });
   },
 });
