@@ -18,6 +18,7 @@ import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
 import { faceRecognition } from 'src/api/auth';
 import { toast } from 'react-toastify';
+import { clearLastUser } from 'src/redux/slices/instruction.slice';
 
 function ConfirmationTable({ users, loading }) {
   const dispatch = useDispatch();
@@ -41,9 +42,11 @@ function ConfirmationTable({ users, loading }) {
     if (checkingUser?.users?.id !== lastUser?.id) {
       toast?.warning("Bu foydalanuvchi siz emassiz, iltimos o'zingizni ma'lumotingizni tasdiqlang");
       setCheckingUser(null);
+      dispatch(clearLastUser());
     } else {
       handleConfirmUser(checkingUser?.id);
       setCheckingUser(null);
+      dispatch(clearLastUser());
     }
   }, [checkingUser, lastUser]);
 

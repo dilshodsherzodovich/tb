@@ -19,6 +19,7 @@ import BlurLoader from 'src/components/loader/BlurLoader';
 import { faceRecognition } from 'src/api/auth';
 import { isString } from 'lodash';
 import { toast } from 'react-toastify';
+import { clearLastUser } from 'src/redux/slices/instruction.slice';
 
 function AttendanceTable({ finished, users, loading }) {
   const dispatch = useDispatch();
@@ -39,6 +40,7 @@ function AttendanceTable({ finished, users, loading }) {
   };
 
   useEffect(() => {
+    console.log(lastUser);
     if (isString(lastUser)) {
       toast.warning(lastUser);
     }
@@ -67,6 +69,15 @@ function AttendanceTable({ finished, users, loading }) {
 
     // eslint-disable-next-line
   }, [lastUser]);
+
+  useEffect(() => {
+    return () => {
+      console.log('Finished');
+      dispatch(clearLastUser());
+      const promise = dispatch(faceRecognition());
+      promise.abort();
+    };
+  }, []);
 
   return (
     <TableContainer sx={{ position: 'relative' }}>

@@ -68,6 +68,9 @@ const instructionSlice = createSlice({
       state.createAttendance = {};
       state.creatingAttendance = false;
     },
+    clearLastUser: (state) => {
+      state.lastUser = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -187,15 +190,21 @@ const instructionSlice = createSlice({
         state.isCameraOn = true;
       })
       .addCase(faceRecognition.fulfilled, (state, action) => {
-        state.lastUser = action.payload?.user || action.payload.message;
+        const errMessages1 = 'Belgilangan vaqt ichida foydalanuvchi topilmadi';
+        if (action.payload?.message === state.lastUser) {
+          state.lastUser = errMessages1;
+        } else {
+          state.lastUser = action.payload?.user || action.payload?.message;
+        }
         state.isCameraOn = false;
       })
-      .addCase(faceRecognition.rejected, (state, action) => {
-        state.lastUser = 'last';
+      .addCase(faceRecognition.rejected, (state) => {
+        state.lastUser = null;
         state.isCameraOn = false;
       });
   },
 });
 
-export const { clearCloseRes, clearCreateRes, clearCreateAttendanceRes } = instructionSlice.actions;
+export const { clearCloseRes, clearCreateRes, clearCreateAttendanceRes, clearLastUser } =
+  instructionSlice.actions;
 export default instructionSlice.reducer;
