@@ -57,7 +57,6 @@ function HomeView() {
   }, []);
 
   useEffect(() => {
-    console.log(activeStep);
     if (activeStep !== 0) {
       dispatch(clearLastUser());
     }

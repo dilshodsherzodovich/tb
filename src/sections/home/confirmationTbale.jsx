@@ -37,7 +37,6 @@ function ConfirmationTable({ users, loading }) {
   );
 
   useEffect(() => {
-    console.log(checkingUser, lastConfirmedUser);
     if (!lastConfirmedUser?.id || !checkingUser?.users) return;
     if (checkingUser?.users?.id !== lastConfirmedUser?.id) {
       toast?.warning("Bu foydalanuvchi siz emassiz, iltimos o'zingizni ma'lumotingizni tasdiqlang");

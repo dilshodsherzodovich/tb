@@ -33,8 +33,8 @@ export default function BlogView() {
   };
 
   const renderMessages = () =>
-    history?.map((item) => (
-      <Box>
+    history?.map((item, index) => (
+      <Box key={item?.id}>
         <Stack gap={1} mb={1} direction="row" key={item?.id}>
           <Box>
             <Stack

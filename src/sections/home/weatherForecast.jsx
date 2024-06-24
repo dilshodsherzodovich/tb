@@ -68,8 +68,8 @@ function WeatherForecast({ weatherData }) {
                 Bugun
               </Typography>
               <Swiper spaceBetween={20} slidesPerView={5.5}>
-                {hours?.map((item) => (
-                  <SwiperSlide>
+                {hours?.map((item, index) => (
+                  <SwiperSlide key={index}>
                     <Card sx={{ padding: 1 }}>
                       <Typography fontSize={14} textAlign="center">
                         {item?.datetime?.slice(0, -3)}

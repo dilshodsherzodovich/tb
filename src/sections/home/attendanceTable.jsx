@@ -35,11 +35,8 @@ function AttendanceTable({ finished, users, loading }) {
     [confirmingUsers, id]
   );
 
-  const handleConfirmUser = (user_id) => {
-    dispatch(confirmUsersAttendance({ token: cookies?.access, id, data: { user_id } }));
-  };
-
   useEffect(() => {
+    if (finished) return;
     if (isString(lastUser)) {
       toast.warning(lastUser);
     }

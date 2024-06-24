@@ -11,6 +11,7 @@ import IconButton from '@mui/material/IconButton';
 
 import { account } from 'src/_mock/account';
 import { useCookies } from 'react-cookie';
+import { API_URL } from 'src/config/config';
 
 // ----------------------------------------------------------------------
 
@@ -59,15 +60,15 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={account?.photoURL}
-          alt={account?.displayName}
+          src={API_URL + cookies?.image}
+          alt={cookies?.username}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account?.displayName.charAt(0).toUpperCase()}
+          {cookies?.username.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
