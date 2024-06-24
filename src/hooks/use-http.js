@@ -20,11 +20,11 @@ export const useHttp = () => {
       })
         .then((res) => res.data)
         .catch((error) => {
-          handleHttpError(error);
+          // handleHttpError(error);
           // return error?.response?.data?.detail ? { error: error.response.data } : {};
         });
     } catch (error) {
-      handleHttpError(error);
+      // handleHttpError(error);
     }
   };
   return { request };

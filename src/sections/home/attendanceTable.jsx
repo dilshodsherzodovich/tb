@@ -40,7 +40,6 @@ function AttendanceTable({ finished, users, loading }) {
   };
 
   useEffect(() => {
-    console.log(lastUser);
     if (isString(lastUser)) {
       toast.warning(lastUser);
     }
@@ -72,7 +71,6 @@ function AttendanceTable({ finished, users, loading }) {
 
   useEffect(() => {
     return () => {
-      console.log('Finished');
       dispatch(clearLastUser());
       const promise = dispatch(faceRecognition());
       promise.abort();

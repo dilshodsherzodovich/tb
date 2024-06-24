@@ -15,6 +15,8 @@ import { End } from '../end';
 import ConfirmationTable from '../confirmationTbale';
 import FinshedInstruction from '../finshedInstruction';
 import { faceRecognition } from 'src/api/auth';
+import { clearLastConfirmedUser, clearLastUser } from 'src/redux/slices/instruction.slice';
+import { isNull } from 'lodash';
 
 function HomeView() {
   const dispatch = useDispatch();
@@ -37,7 +39,9 @@ function HomeView() {
   const disableNext = () => setIsNextDisabled(true);
   const enableNext = () => setIsNextDisabled(false);
 
-  const { detail, detailLoading } = useSelector((state) => state.instructions);
+  const { detail, detailLoading, lastUser, lastConfirmedUser } = useSelector(
+    (state) => state.instructions
+  );
 
   useEffect(() => {
     dispatch(getInstructionsDetails({ token: cookies?.access, id }));
@@ -51,6 +55,16 @@ function HomeView() {
       .then((data) => setWeatherData(data));
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    console.log(activeStep);
+    if (activeStep !== 0) {
+      dispatch(clearLastUser());
+    }
+    if (activeStep !== 3 && !isNull(lastConfirmedUser)) {
+      dispatch(clearLastConfirmedUser());
+    }
+  }, [activeStep]);
 
   // Define Uzbek month and day names
 

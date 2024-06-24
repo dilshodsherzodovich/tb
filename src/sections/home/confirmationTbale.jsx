@@ -18,7 +18,7 @@ import { LoadingButton } from '@mui/lab';
 import BlurLoader from 'src/components/loader/BlurLoader';
 import { faceRecognition } from 'src/api/auth';
 import { toast } from 'react-toastify';
-import { clearLastUser } from 'src/redux/slices/instruction.slice';
+import { clearLastConfirmedUser } from 'src/redux/slices/instruction.slice';
 
 function ConfirmationTable({ users, loading }) {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function ConfirmationTable({ users, loading }) {
 
   const [cookies] = useCookies();
 
-  const { confirmingUsers, lastUser } = useSelector((state) => state.instructions);
+  const { confirmingUsers, lastConfirmedUser } = useSelector((state) => state.instructions);
 
   const [checkingUser, setCheckingUser] = useState(null);
 
@@ -37,18 +37,18 @@ function ConfirmationTable({ users, loading }) {
   );
 
   useEffect(() => {
-    console.log(checkingUser, lastUser);
-    if (!lastUser?.id || !checkingUser?.users) return;
-    if (checkingUser?.users?.id !== lastUser?.id) {
+    console.log(checkingUser, lastConfirmedUser);
+    if (!lastConfirmedUser?.id || !checkingUser?.users) return;
+    if (checkingUser?.users?.id !== lastConfirmedUser?.id) {
       toast?.warning("Bu foydalanuvchi siz emassiz, iltimos o'zingizni ma'lumotingizni tasdiqlang");
       setCheckingUser(null);
-      dispatch(clearLastUser());
+      dispatch(clearLastConfirmedUser());
     } else {
       handleConfirmUser(checkingUser?.id);
       setCheckingUser(null);
-      dispatch(clearLastUser());
+      dispatch(clearLastConfirmedUser());
     }
-  }, [checkingUser, lastUser]);
+  }, [checkingUser, lastConfirmedUser]);
 
   const attendtedUsers = useMemo(() => users?.filter((item) => item?.user_attendance), [users]);
 
@@ -63,7 +63,7 @@ function ConfirmationTable({ users, loading }) {
   };
 
   const handleRequestFaceRecognition = () => {
-    dispatch(faceRecognition({ token: cookies?.access }));
+    dispatch(faceRecognition({ token: cookies?.access, isConfirm: true }));
   };
 
   // handleConfirmUser(item?.id)
